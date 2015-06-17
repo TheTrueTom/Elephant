@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6233" systemVersion="14A329f" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E33b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6233"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
@@ -62,9 +62,37 @@
                         </items>
                     </menu>
                 </menuItem>
+                <menuItem title="File" id="Qnf-oO-GPy">
+                    <modifierMask key="keyEquivalentModifierMask"/>
+                    <menu key="submenu" title="File" id="1MZ-oe-skC">
+                        <items>
+                            <menuItem title="Open" keyEquivalent="o" id="yIY-WD-Hcv">
+                                <connections>
+                                    <action selector="openButtonClicked:" target="494" id="ij0-ci-PlZ"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Enable Edit Mode" keyEquivalent="e" id="ww2-Qc-ByV">
+                                <connections>
+                                    <action selector="editModeClicked:" target="494" id="8vh-4W-rJO"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Save As" enabled="NO" keyEquivalent="s" id="d8O-Z5-cFC">
+                                <connections>
+                                    <action selector="saveButtonClicked:" target="494" id="iud-IY-bxF"/>
+                                </connections>
+                            </menuItem>
+                        </items>
+                    </menu>
+                </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
+                            <menuItem title="Activate transparence" keyEquivalent="t" id="B5S-Lh-Jm3">
+                                <connections>
+                                    <action selector="transparenceButtonClicked:" target="494" id="9RN-Zv-An9"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem isSeparatorItem="YES" id="5Wa-D5-L3c"/>
                             <menuItem title="Minimize" keyEquivalent="m" id="537">
                                 <connections>
                                     <action selector="performMiniaturize:" target="-1" id="538"/>
@@ -100,16 +128,16 @@
                 </menuItem>
             </items>
         </menu>
-        <window title="Elephant" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" animationBehavior="default" id="371">
-            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
+        <window title="Elephant" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="ElWindow" customModule="Elephant" customModuleProvider="target">
+            <windowStyleMask key="styleMask" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="800" height="600"/>
-            <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1177"/>
+            <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="372">
                 <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="539" customClass="SKView">
+                    <customView translatesAutoresizingMaskIntoConstraints="NO" id="539" customClass="ElView" customModule="Elephant" customModuleProvider="target">
                         <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
                     </customView>
                 </subviews>
@@ -121,9 +149,12 @@
                 </constraints>
             </view>
         </window>
-        <customObject id="494" customClass="AppDelegate" customModuleProvider="target">
+        <customObject id="494" customClass="AppDelegate" customModule="Elephant" customModuleProvider="target">
             <connections>
+                <outlet property="editModeMenu" destination="ww2-Qc-ByV" id="ZbM-j8-7CM"/>
+                <outlet property="saveButton" destination="d8O-Z5-cFC" id="izR-Rl-zO4"/>
                 <outlet property="skView" destination="539" id="540"/>
+                <outlet property="transparenceButton" destination="B5S-Lh-Jm3" id="Ciy-md-qAT"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>

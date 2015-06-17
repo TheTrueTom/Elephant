@@ -10,9 +10,25 @@
 		E20B44771B25FD2100163430 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44761B25FD2100163430 /* AppDelegate.swift */; };
 		E20B44791B25FD2100163430 /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44781B25FD2100163430 /* GameScene.swift */; };
 		E20B447B1B25FD2100163430 /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = E20B447A1B25FD2100163430 /* GameScene.sks */; };
-		E20B447D1B25FD2100163430 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E20B447C1B25FD2100163430 /* Images.xcassets */; };
 		E20B44801B25FD2100163430 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E20B447E1B25FD2100163430 /* MainMenu.xib */; };
 		E20B448C1B25FD2100163430 /* ElephantTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B448B1B25FD2100163430 /* ElephantTests.swift */; };
+		E20B44961B25FD5F00163430 /* ElWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44951B25FD5F00163430 /* ElWindow.swift */; };
+		E20B44981B25FD8D00163430 /* ElView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44971B25FD8D00163430 /* ElView.swift */; };
+		E20B449C1B25FF5900163430 /* Track.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B449B1B25FF5900163430 /* Track.swift */; };
+		E20B449E1B2600AD00163430 /* UIPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B449D1B2600AD00163430 /* UIPreferences.swift */; };
+		E20B44A11B262A7B00163430 /* CGVector extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44A01B262A7B00163430 /* CGVector extensions.swift */; };
+		E20B44A41B27489000163430 /* StreamReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44A31B27489000163430 /* StreamReader.swift */; };
+		E20B44A71B2748B200163430 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44A61B2748B200163430 /* Utils.swift */; };
+		E20B44A91B27492400163430 /* ElNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44A81B27492400163430 /* ElNote.swift */; };
+		E20B44AD1B274F9100163430 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E20B44AC1B274F9100163430 /* Images.xcassets */; };
+		E20B44AF1B27541E00163430 /* ElMarker.swift in Sources */ = {isa = PBXBuildFile; fileRef = E20B44AE1B27541E00163430 /* ElMarker.swift */; };
+		E20B44B21B27562B00163430 /* MarkerParticle.sks in Resources */ = {isa = PBXBuildFile; fileRef = E20B44B01B27562B00163430 /* MarkerParticle.sks */; };
+		E26AEF421B2C1B4E0092F946 /* low_vocal.wav in Resources */ = {isa = PBXBuildFile; fileRef = E26AEF3E1B2C1B4E0092F946 /* low_vocal.wav */; };
+		E26AEF441B2C1B4E0092F946 /* low_beat.wav in Resources */ = {isa = PBXBuildFile; fileRef = E26AEF401B2C1B4E0092F946 /* low_beat.wav */; };
+		E26AEF451B2C1B4E0092F946 /* high_beat.wav in Resources */ = {isa = PBXBuildFile; fileRef = E26AEF411B2C1B4E0092F946 /* high_beat.wav */; };
+		E26AEF481B2C2D350092F946 /* EditScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26AEF471B2C2D350092F946 /* EditScene.swift */; };
+		E27E59901B2C66C90018DB5B /* high_vocal.wav in Resources */ = {isa = PBXBuildFile; fileRef = E27E598F1B2C66C90018DB5B /* high_vocal.wav */; };
+		E27E59921B2D7BB60018DB5B /* spark.png in Resources */ = {isa = PBXBuildFile; fileRef = E27E59911B2D7BB60018DB5B /* spark.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,11 +47,27 @@
 		E20B44761B25FD2100163430 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E20B44781B25FD2100163430 /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
 		E20B447A1B25FD2100163430 /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
-		E20B447C1B25FD2100163430 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		E20B447F1B25FD2100163430 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E20B44851B25FD2100163430 /* ElephantTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ElephantTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E20B448A1B25FD2100163430 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E20B448B1B25FD2100163430 /* ElephantTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElephantTests.swift; sourceTree = "<group>"; };
+		E20B44951B25FD5F00163430 /* ElWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElWindow.swift; sourceTree = "<group>"; };
+		E20B44971B25FD8D00163430 /* ElView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElView.swift; sourceTree = "<group>"; };
+		E20B449B1B25FF5900163430 /* Track.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Track.swift; sourceTree = "<group>"; };
+		E20B449D1B2600AD00163430 /* UIPreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPreferences.swift; sourceTree = "<group>"; };
+		E20B44A01B262A7B00163430 /* CGVector extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGVector extensions.swift"; sourceTree = "<group>"; };
+		E20B44A31B27489000163430 /* StreamReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreamReader.swift; sourceTree = "<group>"; };
+		E20B44A61B2748B200163430 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		E20B44A81B27492400163430 /* ElNote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElNote.swift; sourceTree = "<group>"; };
+		E20B44AC1B274F9100163430 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		E20B44AE1B27541E00163430 /* ElMarker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ElMarker.swift; sourceTree = "<group>"; };
+		E20B44B01B27562B00163430 /* MarkerParticle.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = MarkerParticle.sks; sourceTree = "<group>"; };
+		E26AEF3E1B2C1B4E0092F946 /* low_vocal.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = low_vocal.wav; sourceTree = "<group>"; };
+		E26AEF401B2C1B4E0092F946 /* low_beat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = low_beat.wav; sourceTree = "<group>"; };
+		E26AEF411B2C1B4E0092F946 /* high_beat.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = high_beat.wav; sourceTree = "<group>"; };
+		E26AEF471B2C2D350092F946 /* EditScene.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditScene.swift; sourceTree = "<group>"; };
+		E27E598F1B2C66C90018DB5B /* high_vocal.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = high_vocal.wav; sourceTree = "<group>"; };
+		E27E59911B2D7BB60018DB5B /* spark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = spark.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,11 +109,13 @@
 		E20B44731B25FD2100163430 /* Elephant */ = {
 			isa = PBXGroup;
 			children = (
-				E20B44761B25FD2100163430 /* AppDelegate.swift */,
-				E20B44781B25FD2100163430 /* GameScene.swift */,
-				E20B447A1B25FD2100163430 /* GameScene.sks */,
-				E20B447C1B25FD2100163430 /* Images.xcassets */,
-				E20B447E1B25FD2100163430 /* MainMenu.xib */,
+				E26AEF461B2C1B540092F946 /* Sounds */,
+				E20B44A51B27489600163430 /* System */,
+				E20B44A21B262A8100163430 /* Extensions */,
+				E20B449F1B26287C00163430 /* Animation Elements */,
+				E20B449A1B25FE6C00163430 /* Animation */,
+				E20B44991B25FE4D00163430 /* UI */,
+				E20B44AC1B274F9100163430 /* Images.xcassets */,
 				E20B44741B25FD2100163430 /* Supporting Files */,
 			);
 			path = Elephant;
@@ -110,6 +144,68 @@
 				E20B448A1B25FD2100163430 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E20B44991B25FE4D00163430 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				E20B44951B25FD5F00163430 /* ElWindow.swift */,
+				E20B44971B25FD8D00163430 /* ElView.swift */,
+				E20B447E1B25FD2100163430 /* MainMenu.xib */,
+			);
+			name = UI;
+			sourceTree = "<group>";
+		};
+		E20B449A1B25FE6C00163430 /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				E20B44781B25FD2100163430 /* GameScene.swift */,
+				E26AEF471B2C2D350092F946 /* EditScene.swift */,
+				E20B447A1B25FD2100163430 /* GameScene.sks */,
+			);
+			name = Animation;
+			sourceTree = "<group>";
+		};
+		E20B449F1B26287C00163430 /* Animation Elements */ = {
+			isa = PBXGroup;
+			children = (
+				E20B449D1B2600AD00163430 /* UIPreferences.swift */,
+				E20B449B1B25FF5900163430 /* Track.swift */,
+				E20B44A81B27492400163430 /* ElNote.swift */,
+				E20B44AE1B27541E00163430 /* ElMarker.swift */,
+				E20B44B01B27562B00163430 /* MarkerParticle.sks */,
+				E27E59911B2D7BB60018DB5B /* spark.png */,
+			);
+			name = "Animation Elements";
+			sourceTree = "<group>";
+		};
+		E20B44A21B262A8100163430 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				E20B44A01B262A7B00163430 /* CGVector extensions.swift */,
+			);
+			name = Extensions;
+			sourceTree = "<group>";
+		};
+		E20B44A51B27489600163430 /* System */ = {
+			isa = PBXGroup;
+			children = (
+				E20B44761B25FD2100163430 /* AppDelegate.swift */,
+				E20B44A31B27489000163430 /* StreamReader.swift */,
+				E20B44A61B2748B200163430 /* Utils.swift */,
+			);
+			name = System;
+			sourceTree = "<group>";
+		};
+		E26AEF461B2C1B540092F946 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				E26AEF3E1B2C1B4E0092F946 /* low_vocal.wav */,
+				E27E598F1B2C66C90018DB5B /* high_vocal.wav */,
+				E26AEF401B2C1B4E0092F946 /* low_beat.wav */,
+				E26AEF411B2C1B4E0092F946 /* high_beat.wav */,
+			);
+			name = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -192,9 +288,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E27E59901B2C66C90018DB5B /* high_vocal.wav in Resources */,
+				E20B44AD1B274F9100163430 /* Images.xcassets in Resources */,
+				E26AEF421B2C1B4E0092F946 /* low_vocal.wav in Resources */,
+				E26AEF451B2C1B4E0092F946 /* high_beat.wav in Resources */,
 				E20B447B1B25FD2100163430 /* GameScene.sks in Resources */,
-				E20B447D1B25FD2100163430 /* Images.xcassets in Resources */,
+				E27E59921B2D7BB60018DB5B /* spark.png in Resources */,
+				E26AEF441B2C1B4E0092F946 /* low_beat.wav in Resources */,
 				E20B44801B25FD2100163430 /* MainMenu.xib in Resources */,
+				E20B44B21B27562B00163430 /* MarkerParticle.sks in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,7 +315,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				E20B44791B25FD2100163430 /* GameScene.swift in Sources */,
+				E20B449C1B25FF5900163430 /* Track.swift in Sources */,
+				E20B44A71B2748B200163430 /* Utils.swift in Sources */,
+				E20B44961B25FD5F00163430 /* ElWindow.swift in Sources */,
+				E20B44A11B262A7B00163430 /* CGVector extensions.swift in Sources */,
+				E20B44A41B27489000163430 /* StreamReader.swift in Sources */,
+				E20B44A91B27492400163430 /* ElNote.swift in Sources */,
 				E20B44771B25FD2100163430 /* AppDelegate.swift in Sources */,
+				E20B44AF1B27541E00163430 /* ElMarker.swift in Sources */,
+				E20B449E1B2600AD00163430 /* UIPreferences.swift in Sources */,
+				E26AEF481B2C2D350092F946 /* EditScene.swift in Sources */,
+				E20B44981B25FD8D00163430 /* ElView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,6 +446,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = Elephant/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				OTHER_SWIFT_FLAGS = "-D DEBUG";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -404,6 +517,7 @@
 				E20B44911B25FD2100163430 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		E20B44921B25FD2100163430 /* Build configuration list for PBXNativeTarget "ElephantTests" */ = {
 			isa = XCConfigurationList;
@@ -412,6 +526,7 @@
 				E20B44941B25FD2100163430 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
