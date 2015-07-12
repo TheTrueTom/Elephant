@@ -11,7 +11,4 @@ import SpriteKit
 
 class ElView: SKView {
     
-    override func viewDidEndLiveResize() {
-        self.scene?.didMoveToView(self)
-    }
 }

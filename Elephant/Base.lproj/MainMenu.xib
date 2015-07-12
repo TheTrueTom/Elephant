@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E33b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="7706"/>
     </dependencies>
@@ -71,28 +71,12 @@
                                     <action selector="openButtonClicked:" target="494" id="ij0-ci-PlZ"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Enable Edit Mode" keyEquivalent="e" id="ww2-Qc-ByV">
-                                <connections>
-                                    <action selector="editModeClicked:" target="494" id="8vh-4W-rJO"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem title="Save As" enabled="NO" keyEquivalent="s" id="d8O-Z5-cFC">
-                                <connections>
-                                    <action selector="saveButtonClicked:" target="494" id="iud-IY-bxF"/>
-                                </connections>
-                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
-                            <menuItem title="Activate transparence" keyEquivalent="t" id="B5S-Lh-Jm3">
-                                <connections>
-                                    <action selector="transparenceButtonClicked:" target="494" id="9RN-Zv-An9"/>
-                                </connections>
-                            </menuItem>
-                            <menuItem isSeparatorItem="YES" id="5Wa-D5-L3c"/>
                             <menuItem title="Minimize" keyEquivalent="m" id="537">
                                 <connections>
                                     <action selector="performMiniaturize:" target="-1" id="538"/>
@@ -129,16 +113,16 @@
             </items>
         </menu>
         <window title="Elephant" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="ElWindow" customModule="Elephant" customModuleProvider="target">
-            <windowStyleMask key="styleMask" closable="YES" miniaturizable="YES" resizable="YES"/>
+            <windowStyleMask key="styleMask" closable="YES" miniaturizable="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
-            <rect key="contentRect" x="0.0" y="0.0" width="800" height="600"/>
+            <rect key="contentRect" x="0.0" y="0.0" width="1024" height="597"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>
             <view key="contentView" id="372">
-                <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+                <rect key="frame" x="0.0" y="0.0" width="1024" height="597"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <customView translatesAutoresizingMaskIntoConstraints="NO" id="539" customClass="ElView" customModule="Elephant" customModuleProvider="target">
-                        <rect key="frame" x="0.0" y="0.0" width="800" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="1024" height="597"/>
                     </customView>
                 </subviews>
                 <constraints>
@@ -151,10 +135,7 @@
         </window>
         <customObject id="494" customClass="AppDelegate" customModule="Elephant" customModuleProvider="target">
             <connections>
-                <outlet property="editModeMenu" destination="ww2-Qc-ByV" id="ZbM-j8-7CM"/>
-                <outlet property="saveButton" destination="d8O-Z5-cFC" id="izR-Rl-zO4"/>
                 <outlet property="skView" destination="539" id="540"/>
-                <outlet property="transparenceButton" destination="B5S-Lh-Jm3" id="Ciy-md-qAT"/>
                 <outlet property="window" destination="371" id="532"/>
             </connections>
         </customObject>

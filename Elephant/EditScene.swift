@@ -26,10 +26,15 @@ class EditScene: SKScene {
     
     var timeLabel: SKLabelNode!
     
-    var currentNode: ElNote? {
+    var currentNode: [ElNote] = [] {
         didSet {
-            oldValue?.colorBlendFactor = 0.8
-            currentNode?.colorBlendFactor = 0.0
+            for element in oldValue {
+                element.colorBlendFactor = 0.8
+            }
+            
+            for element in currentNode {
+                element.colorBlendFactor = 0.0
+            }
         }
     }
     
@@ -42,6 +47,10 @@ class EditScene: SKScene {
     var playStatusNode: SKSpriteNode!
     
     var currentKeyboardNotes: [UInt16: ElNote] = [:]
+    
+    var cmdPressed: Bool = false
+    
+    var selectionNode: SKShapeNode?
     
     // MARK: - LIFE CYCLE
     
@@ -91,6 +100,8 @@ class EditScene: SKScene {
         var keyCode = theEvent.keyCode
         
         switch keyCode {
+        case 12: // A
+            cmdPressed = true
         case 49: // Space
             
             if isPlaying {
@@ -116,19 +127,23 @@ class EditScene: SKScene {
                 newNote(keyCode)
             }
         case 51: // Del
-            if currentNode != nil {
-                currentNode?.removeFromParent()
+            if !currentNode.isEmpty {
                 
-                var newArray: [ElNote] = []
-                for note in notes[Int(currentNode!.appearTime)]! {
-                    if note != currentNode {
-                        newArray.append(note)
+                for element in currentNode {
+                    element.removeFromParent()
+                    
+                    var newArray: [ElNote] = []
+                    
+                    for note in notes[Int(element.appearTime)]! {
+                        if note != element {
+                            newArray.append(note)
+                        }
                     }
+                    
+                    notes.updateValue(newArray, forKey: Int(element.appearTime))
+                    
+                    currentNode.removeAll(keepCapacity: false)
                 }
-                
-                notes.updateValue(newArray, forKey: Int(currentNode!.appearTime))
-                
-                currentNode = nil
             }
         default:
             break
@@ -143,6 +158,8 @@ class EditScene: SKScene {
             if currentKeyboardNotes[keyCode] != nil {
                 endNote(keyCode)
             }
+        case 12: // A
+            cmdPressed = false
         default:
             break
         }
@@ -166,21 +183,25 @@ class EditScene: SKScene {
         
         mouseClickPosition = clickPosition
         
-        currentNode = nil
-        
         var nodes = world.nodesAtPoint(theEvent.locationInNode(world))
         
-        var nodeSelected = false
+        if nodes.isEmpty {
+            currentNode.removeAll(keepCapacity: false)
+        }
         
         for node in nodes {
             if node.isKindOfClass(ElNote) {
-                nodeSelected = true
-                
-                currentNode = node as? ElNote
+                if cmdPressed {
+                    currentNode.append(node as! ElNote)
+                } else {
+                    currentNode = [node as! ElNote]
+                }
+            } else {
+                currentNode.removeAll(keepCapacity: false)
             }
         }
         
-        if !nodeSelected {
+        if currentNode.isEmpty {
             
             for i in 0...3 {
                 var track = tracks[i]
@@ -235,7 +256,19 @@ class EditScene: SKScene {
     
     override func mouseDragged(theEvent: NSEvent) {
         
-        if currentNode != nil {
+        if cmdPressed {
+            var mouseCurrentLocation = theEvent.locationInNode(world)
+            
+            selectionNode?.removeFromParent()
+            selectionNode = SKShapeNode(rect: CGRectMake(mouseClickPosition.x, mouseClickPosition.y, mouseCurrentLocation.x - mouseClickPosition.x, mouseCurrentLocation.y - mouseClickPosition.y))
+            selectionNode?.strokeColor = NSColor.whiteColor()
+            selectionNode?.fillColor = NSColor.clearColor()
+            world.addChild(selectionNode!)
+            
+            return
+        }
+        
+        if currentNode.count == 1 {
             // Queue generation
             var mouseCurrentLocation = theEvent.locationInNode(world)
         
@@ -243,19 +276,19 @@ class EditScene: SKScene {
             
             
             if dx > 0 {
-                currentNode!.noteDuration = Double(dx / pixelsPerFrame)
+                currentNode[0].noteDuration = Double(dx / pixelsPerFrame)
                 
-                if currentNode!.noteDuration < 10 {
-                    currentNode!.queue?.removeFromParent()
-                    currentNode!.queue = nil
+                if currentNode[0].noteDuration < 10 {
+                    currentNode[0].queue?.removeFromParent()
+                    currentNode[0].queue = nil
                 } else {
-                    currentNode!.queue?.removeFromParent()
-                    currentNode!.queue = SKSpriteNode(color: currentNode?.color, size: CGSizeMake(UIConfig.queueWidth, currentNode!.calculateQueueLength()))
-                    currentNode!.queue!.color = currentNode!.color
-                    currentNode!.queue!.colorBlendFactor = 0.8
-                    currentNode!.queue!.anchorPoint = CGPointMake(0.5, 0)
-                    currentNode!.queue!.zRotation = CGFloat(-M_PI_2)
-                    currentNode!.addChild(currentNode!.queue!)
+                    currentNode[0].queue?.removeFromParent()
+                    currentNode[0].queue = SKSpriteNode(color: currentNode[0].color, size: CGSizeMake(UIConfig.queueWidth, currentNode[0].calculateQueueLength()))
+                    currentNode[0].queue!.color = currentNode[0].color
+                    currentNode[0].queue!.colorBlendFactor = 0.8
+                    currentNode[0].queue!.anchorPoint = CGPointMake(0.5, 0)
+                    currentNode[0].queue!.zRotation = CGFloat(-M_PI_2)
+                    currentNode[0].addChild(currentNode[0].queue!)
                 }
             }
         } else {
@@ -272,6 +305,23 @@ class EditScene: SKScene {
             
             self.view!.window!.setFrameOrigin(newOrigin)
         }
+    }
+    
+    override func mouseUp(theEvent: NSEvent) {
+        if cmdPressed {
+            for node in world.children {
+                if node.isKindOfClass(ElNote) {
+                    if node.intersectsNode(selectionNode!) {
+                        if !contains(currentNode, node as! ElNote) {
+                            currentNode.append(node as! ElNote)
+                        }
+                    }
+                }
+            }
+        }
+        
+        selectionNode?.removeFromParent()
+        selectionNode = nil
     }
     
     // MARK: - NOTE CREATION
@@ -347,7 +397,7 @@ class EditScene: SKScene {
             for (key, note) in currentKeyboardNotes {
                 note.noteDuration += 1
                 
-                if note.noteDuration > 20 {
+                if note.noteDuration > 300 {
                     note.queue?.removeFromParent()
                     note.queue = SKSpriteNode(color: note.color, size: CGSizeMake(UIConfig.queueWidth, (CGFloat(note.noteDuration) * pixelsPerFrame) - note.size.width))
                     note.queue!.position.x = note.size.width / 2

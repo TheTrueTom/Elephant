@@ -12,7 +12,7 @@ import SpriteKit
 class ElMarker: SKSpriteNode {
     
     init(position: CGPoint, color: NSColor) {
-        super.init(texture: SKTexture(imageNamed: "circle"), color: color, size: UIConfig.noteEndSize)
+        super.init(texture: SKTexture(imageNamed: "note"), color: color, size: UIConfig.noteEndSize)
         self.position = position
         self.colorBlendFactor = UIConfig.songItemColorBlendingFactor
         

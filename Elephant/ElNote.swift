@@ -8,6 +8,7 @@
 
 import Foundation
 import SpriteKit
+import AVFoundation
 
 enum Tone {
     case High
@@ -19,7 +20,7 @@ enum SoundType {
     case Vocal
 }
 
-class ElNote: SKSpriteNode {
+class ElNote: SKSpriteNode, Printable {
     
     /** Corde sur laquelle est placée la note */
     var trackPosition: TrackPosition = .FarLeft
@@ -33,14 +34,29 @@ class ElNote: SKSpriteNode {
     /** Temps que dure la note */
     var noteDuration: NSTimeInterval = 0
     
-    /** Trainée pour les notes longues */
-    var queue: SKSpriteNode?
-    
     /** Type de note */
     var soundType: SoundType!
     
     /** Tonalité de la note */
     var tone: Tone!
+    
+    var soundAction: SKAction!
+    
+    var alphaAction: SKAction!
+    
+    var mainMoveAction: SKAction!
+    var mainSizeAction: SKAction!
+    var mainAlphaAction: SKAction!
+    var mainGroupedAction: SKAction!
+    
+    var yoloUpAction: SKAction!
+    var yoloDownAction: SKAction!
+    
+    override var description: String {
+        get {
+            return "Note: appearTime = \(appearTime)"
+        }
+    }
     
     init(texture: SKTexture!, color: NSColor!, size: CGSize, appearTime: NSTimeInterval, noteDuration: NSTimeInterval, track: TrackPosition, tone: Tone, soundType: SoundType) {
         super.init(texture: texture, color: color, size: size)
@@ -70,21 +86,24 @@ class ElNote: SKSpriteNode {
             fatalError("Wrong track position called in ElNote init")
         }
         
-        // Création de la queue de la note si celle-ci dure plus que 10 frames
-        if noteDuration > 20 {
-            queue = SKSpriteNode(color: color, size: CGSizeMake(UIConfig.queueWidth, calculateQueueLength()))
-            queue!.color = color
-            queue!.colorBlendFactor = 0.8
-            queue!.anchorPoint = CGPointMake(0.5, 0)
-            
-            if track == .FarLeft || track == .CenterLeft {
-                queue!.zRotation = -self.track.angle
-            } else if track == .CenterRight || track == .FarRight {
-                queue!.zRotation = self.track.angle
-            }
-            
-            self.addChild(queue!)
+        var soundName = ""
+        
+        switch track {
+        case .FarLeft:
+            soundName = "low_beat"
+        case .CenterLeft:
+            soundName = "high_beat"
+        case .CenterRight:
+            soundName = "low_beat"
+        case .FarRight:
+            soundName = "high_beat"
+        default:
+            fatalError("Wrong track called in sound init ElNote")
         }
+        
+        soundAction = SKAction.playSoundFileNamed(soundName + ".wav", waitForCompletion: false)
+    
+        alphaAction = SKAction.fadeAlphaTo(0, duration: 1)
     }
     
     convenience init(track: TrackPosition, appearTime: NSTimeInterval, noteDuration: NSTimeInterval) {
@@ -92,29 +111,34 @@ class ElNote: SKSpriteNode {
         var color = NSColor.whiteColor()
         var tone: Tone = .Low
         var soundType: SoundType = .Vocal
+        var texture: String = ""
         
         switch track {
         case .FarLeft:
             color = NSColor.redColor()
             tone = .Low
             soundType = .Vocal
+            texture = "note1"
         case .CenterLeft:
             color = NSColor.greenColor()
             tone = .High
             soundType = .Vocal
+            texture = "note3"
         case .CenterRight:
             color = NSColor.blueColor()
             tone = .Low
             soundType = .Beat
+            texture = "note2"
         case .FarRight:
             color = NSColor.orangeColor()
             tone = .High
             soundType = .Beat
+            texture = "note4"
         default:
             fatalError("Wrong track called in convenience init ElNote")
         }
         
-        self.init(texture: SKTexture(imageNamed: "circle"), color: color, size: UIConfig.noteStartSize, appearTime: appearTime, noteDuration: noteDuration, track: track, tone: tone, soundType: soundType)
+        self.init(texture: SKTexture(imageNamed: texture), color: color, size: UIConfig.noteStartSize, appearTime: appearTime, noteDuration: noteDuration, track: track, tone: tone, soundType: soundType)
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -127,11 +151,13 @@ class ElNote: SKSpriteNode {
         self.size = UIConfig.noteStartSize
     }
     
-    func calculateQueueLength() -> CGFloat {
-        return CGFloat(noteDuration / UIConfig.expectedFPS) * (track.length / CGFloat(UIConfig.realNoteDuration))
+    func resetToStart() {
+        position = track.top
+        alpha = 0
+        size = UIConfig.noteStartSize
     }
     
-    func animate(endTime: Double) {
+    func prepareForAnimation(endTime: Double) {
         let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
         
         if let sceneSize = appDelegate.skView.scene?.frame.size {
@@ -145,12 +171,14 @@ class ElNote: SKSpriteNode {
             /// Time (in seconds) the note will actually live (from the moment it appears til the end of the song
             let realDuration = (endTime - appearTime) / UIConfig.expectedFPS
             
+            let realNoteDuration = CGFloat(UIConfig.noteDuration) * (sqrt(pow(track.top.x - track.bottom.x, 2) + pow(track.top.y - track.bottom.y, 2)) / sqrt(pow(track.top.x - track.markerPosition.x, 2) + pow(track.top.y - track.markerPosition.y, 2)))
+            
             /// Time the note will live divided by the time a note spends on screen
-            let multiplier = CGFloat(realDuration / UIConfig.realNoteDuration)
+            let multiplier = CGFloat(realDuration) / realNoteDuration
             
             // Definition of the real distance (as a vector) the note will travel
-            let dx = multiplier * (finalPosition.x - self.position.x)
-            let dy = multiplier * (finalPosition.y - self.position.y)
+            let dx = 10 * multiplier * (finalPosition.x - self.position.x)
+            let dy = 10 * multiplier * (finalPosition.y - self.position.y)
             let moveVector = CGVector(dx: dx, dy: dy)
             
             // Definition of the real size change the note will undergo
@@ -158,31 +186,36 @@ class ElNote: SKSpriteNode {
             let dh = multiplier * (UIConfig.noteEndSize.height - self.size.height)
             
             /// Real time the note will live
-            let duration = UIConfig.realNoteDuration * Double(multiplier)
+            let duration = Double(realNoteDuration * multiplier)
             
             // Move
-            let moveAction = SKAction.moveBy(moveVector, duration: duration)
+            mainMoveAction = SKAction.moveBy(moveVector, duration: duration)
             
             // Resize
-            let sizeAction = SKAction.resizeByWidth(dw, height: dh, duration: duration)
+            mainSizeAction = SKAction.resizeByWidth(dw, height: dh, duration: duration)
             
             // Alpha when entering the screen
-            let alphaAction = SKAction.fadeAlphaTo(1, duration: 0.5)
+            mainAlphaAction = SKAction.fadeAlphaTo(1, duration: 0.5)
             
             // All actions are simultaneous, only the alpha will stop before the others and won't be reversible
-            let groupedAction = SKAction.group([moveAction, sizeAction, alphaAction])
+            mainGroupedAction = SKAction.group([mainMoveAction, mainSizeAction, mainAlphaAction])
             
-            self.runAction(groupedAction)
+            yoloUpAction = SKAction.resizeToWidth(UIConfig.noteYoloSize.width, height: UIConfig.noteYoloSize.height, duration: 0.1)
+            yoloDownAction = SKAction.resizeToWidth(UIConfig.noteEndSize.width, height: UIConfig.noteEndSize.height, duration: 0.1)
         }
     }
     
-    func animateEdit() {
-        position = track.markerPosition
-        alpha = 1
-        
-        let finalPosition = track.top
-        
-        let moveAction = SKAction.moveTo(finalPosition, duration: 10)
-        self.runAction(moveAction)
+    func animate(endTime: Double) {
+        self.runAction(mainGroupedAction)
+    }
+    
+    func fadeAlpha() {
+        self.runAction(alphaAction)
+    }
+    
+    func fireEmitter() {
+        self.runAction(yoloUpAction) {
+            self.runAction(self.yoloDownAction)
+        }
     }
 }

@@ -16,7 +16,7 @@ enum TrackPosition {
     case FarRight
 }
 
-class Track: SKShapeNode {
+class Track{
     
     // Calculated Characteristics
     var top: CGPoint!
@@ -33,29 +33,26 @@ class Track: SKShapeNode {
         
         trackPosition = position
         
-        // Position du début et de la fin de la piste
-        var topShift: CGFloat = 0
-        var bottomShift: CGFloat = 0
-        
         switch position {
         case .FarLeft:
-            topShift = -UIConfig.topTrackSpacing - UIConfig.topSubSpacing
-            bottomShift = -UIConfig.bottomTrackSpacing - UIConfig.bottomSubSpacing
+            self.top = CGPointMake(119, 390)
+            self.bottom = CGPointMake(480, 0)
+            self.markerPosition = CGPointMake(355, 134)
         case .CenterLeft:
-            topShift = -UIConfig.topTrackSpacing + UIConfig.topSubSpacing
-            bottomShift = -UIConfig.bottomTrackSpacing + UIConfig.bottomSubSpacing
+            self.top = CGPointMake(396, 470)
+            self.bottom = CGPointMake(525, 0)
+            self.markerPosition = CGPointMake(472, 194)
         case .CenterRight:
-            topShift = UIConfig.topTrackSpacing - UIConfig.topSubSpacing
-            bottomShift = UIConfig.bottomTrackSpacing - UIConfig.bottomSubSpacing
+            self.top = CGPointMake(680, 470)
+            self.bottom = CGPointMake(500, 0)
+            self.markerPosition = CGPointMake(572, 190)
         case .FarRight:
-            topShift = UIConfig.topTrackSpacing + UIConfig.topSubSpacing
-            bottomShift = UIConfig.bottomTrackSpacing + UIConfig.bottomSubSpacing
+            self.top = CGPointMake(890, 390)
+            self.bottom = CGPointMake(520, 0)
+            self.markerPosition = CGPointMake(660, 140)
         default:
             fatalError("Unknown track position used during Track initialization")
         }
-        
-        self.top = CGPointMake(UIConfig.screenSize.width / 2 + topShift, UIConfig.screenSize.height)
-        self.bottom = CGPointMake(UIConfig.screenSize.width / 2 + bottomShift, 0)
         
         // Longueur et angle de la corde avec la hauteur de l'écran
         let vector = CGVector.makeFromPoint(A: bottom, B: top)
@@ -63,38 +60,12 @@ class Track: SKShapeNode {
         length = vector.length()
         
         switch position {
-        case .FarLeft, .CenterLeft:
-            angle = CGVectorMake(0, UIConfig.screenSize.height).angleWith(vector)
         case .CenterRight, .FarRight:
-            angle = vector.angleWith(CGVectorMake(0, UIConfig.screenSize.height))
+            angle = -CGVectorMake(0, UIConfig.screenSize.height).angleWith(vector)
+        case .FarLeft, .CenterLeft:
+            angle = -vector.angleWith(CGVectorMake(0, UIConfig.screenSize.height))
         default:
             fatalError("Unknown track position used during Track initialization")
         }
-        
-        // Position des marqueurs
-        let a: CGFloat = (top.y - bottom.y) / (top.x - bottom.x)
-        let b: CGFloat = top.y - a * top.x
-        
-        let X = (UIConfig.baseLineHeight - b) / a
-        
-        markerPosition = CGPointMake(X, UIConfig.baseLineHeight)
-        
-        var path: CGMutablePathRef = CGPathCreateMutable()
-        CGPathMoveToPoint(path, nil, top.x, top.y)
-        CGPathAddLineToPoint(path, nil, bottom.x, bottom.y)
-        
-        super.init()
-        
-        self.path = path
-        self.alpha = 1
-        self.fillColor = NSColor.whiteColor()
-        self.strokeColor = NSColor.whiteColor()
-        self.lineWidth = UIConfig.trackStrokeWidth
-        
-        self.lineWidth = UIConfig.trackStrokeWidth
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

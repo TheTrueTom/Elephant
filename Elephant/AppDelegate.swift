@@ -20,12 +20,10 @@ extension SKNode {
             
             let scene: SKScene!
             
-            if type == "Edit" {
-                scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as! EditScene
-            } else {
-                scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as! GameScene
-            }
+            scene = archiver.decodeObjectForKey(NSKeyedArchiveRootObjectKey) as! GameScene
+            
             archiver.finishDecoding()
+            
             return scene
         } else {
             return nil
@@ -40,7 +38,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var skView: ElView!
     
     var mainScene: GameScene!
-    var editScene: EditScene!
     
     var editModeEnabled: Bool = false
     var transparenceEnabled: Bool = false
@@ -49,67 +46,31 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         var openPanel: NSOpenPanel = NSOpenPanel()
         openPanel.prompt = "Ouvrir"
         openPanel.worksWhenModal = true
-        openPanel.allowsMultipleSelection = false
-        openPanel.canChooseDirectories = false
+        openPanel.allowsMultipleSelection = true
+        openPanel.canChooseDirectories = true
         openPanel.resolvesAliases = true
         openPanel.title = "Ouvrir"
         openPanel.message = "Ouvrir un fichier chanson"
-        openPanel.allowedFileTypes = ["txt"]
+        openPanel.allowedFileTypes = ["mid"]
         
         openPanel.runModal()
         
-        if let chosenFile = openPanel.URL {
+        if let folderPath = openPanel.URL {
+            var enumerator = NSFileManager.defaultManager().enumeratorAtURL(folderPath, includingPropertiesForKeys: nil, options: NSDirectoryEnumerationOptions.SkipsHiddenFiles | NSDirectoryEnumerationOptions.SkipsSubdirectoryDescendants, errorHandler: nil)
             
-            mainScene.notes = Utils.notesFromFile(chosenFile.absoluteURL!)
-            mainScene.endTime = Utils.getMaxKey(self.mainScene.notes)
-            mainScene.endTime += 2 * UIConfig.realNoteDuration * Double(UIConfig.expectedFPS)
-        
-            editScene.notes = Utils.notesFromFile(chosenFile.absoluteURL!)
-            editScene.loadNotes()
-        }
-    }
-    
-    @IBOutlet weak var editModeMenu: NSMenuItem!
-    
-    @IBAction func editModeClicked(sender: AnyObject) {
-        editModeEnabled = !editModeEnabled
-        saveButton.enabled = editModeEnabled
-        
-        if editModeEnabled {
-            self.skView!.presentScene(editScene, transition: SKTransition.doorwayWithDuration(1))
-        } else {
-            self.skView!.presentScene(mainScene, transition: SKTransition.doorwayWithDuration(1))
-        }
-    }
-    
-    @IBOutlet weak var saveButton: NSMenuItem!
-    
-    @IBAction func saveButtonClicked(sender: AnyObject) {
-        var savePanel: NSSavePanel = NSSavePanel()
-        savePanel.prompt = "Enregistrer"
-        savePanel.worksWhenModal = true
-        savePanel.allowedFileTypes = ["txt"]
-        savePanel.message = "Choisir l'emplacement pour sauver les données"
-        savePanel.canCreateDirectories = true
-        
-        savePanel.runModal()
-        
-        if let chosenPath = savePanel.URL {
-            Utils.saveFileFromNotes(chosenPath, notes: editScene.notes)
-        }
-    }
-    
-    @IBOutlet weak var transparenceButton: NSMenuItem!
-    
-    @IBAction func transparenceButtonClicked(sender: AnyObject) {
-        transparenceEnabled = !transparenceEnabled
-        
-        if transparenceEnabled {
-            mainScene.backgroundColor = NSColor.clearColor()
-            transparenceButton.title = "Deactivate transparence"
-        } else {
-            mainScene.backgroundColor = NSColor.grayColor()
-            transparenceButton.title = "Activate transparence"
+            var i = 0
+            
+            mainScene.preloadedNotes.removeAll(keepCapacity: false)
+            
+            while let file = enumerator?.nextObject() as? NSURL {
+                if i < 11 && file.pathExtension == "mid" {
+                    mainScene.preloadedNotes.append(MidiFile.readMidiFile(file))
+                    i++
+                }
+            }
+            if !mainScene.preloadedNotes.isEmpty {
+                mainScene.loadNotes(0)
+            }
         }
     }
     
@@ -130,17 +91,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.skView!.showsFPS = true
             self.skView!.showsNodeCount = true
             #endif
-            
-            self.skView!.allowsTransparency = true
-            
-            self.window.backgroundColor = NSColor.clearColor()
-            self.window.opaque = false
         }
-        
+        /*
         if let scene = EditScene.unarchiveFromFile("GameScene", type: "Edit") as? EditScene {
             editScene = scene
             editScene.scaleMode = .AspectFill
-        }
+        }*/
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {

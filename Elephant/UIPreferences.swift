@@ -9,55 +9,25 @@
 import Foundation
 
 struct UIPreferences {
-    // MARK: - Cordes
-    
-    /// Espacement entre les cordes au bas de l'écran
-    var bottomTrackSpacing: CGFloat = 250
-    
-    /// Espacement entre deux sous-cordes au bas de l'écran
-    var bottomSubSpacing: CGFloat = 75
-    
-    /// Espacement entre les cordes en haut de l'écran
-    var topTrackSpacing: CGFloat = 100
-    
-    /// Espacement entre deux sous-cordes en haut de l'écran
-    var topSubSpacing: CGFloat = 30
-    
-    /// Largeur du trait des cordes
-    var trackStrokeWidth: CGFloat = 2
-    
-    /// Hauteur de la ligne de base par rapport au bas de l'écran
-    var baseLineHeight: CGFloat = 100
-    
-    /// Espacement entre les lignes secondaires
-    var sublineSpacing: CGFloat = 100
-    
-    /// Largeur du trait de la ligne de base
-    var baseLineStrokeWidth: CGFloat = 2
-    
-    /// Largeur du trait des lignes secondaires
-    var sublineStrokeWidth: CGFloat = 1
     
     // MARK: - Notes
     
     /// Largeur des notes
-    var noteWidth: CGFloat = 60
+    var noteWidth: CGFloat = 50
     
     /// Longueur des notes
-    var noteHeight: CGFloat = 30
+    var noteHeight: CGFloat = 50
     
-    /// Temps que mets une note pour aller du haut à la ligne de base (en s)
-    var noteDuration: NSTimeInterval = 10
-    
+    /// Temps que mets une note pour aller du haut à la ligne de base
+    var noteDuration: NSTimeInterval = 30
     
     /// Mix entre la couleur et la texture des notes
-    var songItemColorBlendingFactor: CGFloat = 0.8
-    
-    /// Largeur de trait de la queue des notes longues
-    var queueWidth: CGFloat = 8
+    var songItemColorBlendingFactor: CGFloat = 0
     
     /// Wether sounds should be played or not
     var playSound: Bool = true
+    
+    var yoloFactor: CGFloat = 2
     
     // MARK: - RESERVED
     
@@ -78,18 +48,10 @@ struct UIPreferences {
         self.screenSize = size
     }
     
-    /// Temps que mets une note pour aller du haut de l'écran au bas de l'écran
-    var realNoteDuration: NSTimeInterval {
-        let durationMultiplier = screenSize.height / (screenSize.height - baseLineHeight)
-        
-        return noteDuration * Double(durationMultiplier)
-    }
-    
     /// Taille des notes en haut de l'écran
     var noteStartSize: CGSize {
-        
-        let height = noteEndSize.height / ((bottomTrackSpacing / topTrackSpacing) / 2)
-        let width = noteEndSize.width / ((bottomTrackSpacing / topTrackSpacing) / 2)
+        let height = noteEndSize.height * 0.75
+        let width = noteEndSize.width * 0.75
         return CGSizeMake(width, height)
     }
     
@@ -98,16 +60,7 @@ struct UIPreferences {
         return CGSizeMake(noteWidth, noteHeight)
     }
     
-    /// Sound Far Left
-    var soundA: NSURL? = nil
-    
-    /// Sound Center Left
-    var soundB: NSURL? = nil
-    
-    /// Sound Center Right
-    var soundC: NSURL? = nil
-    
-    /// Sound Far Right
-    var soundD: NSURL? = nil
-    
+    var noteYoloSize: CGSize {
+        return CGSizeMake(noteWidth * yoloFactor, noteHeight * yoloFactor)
+    }
 }
