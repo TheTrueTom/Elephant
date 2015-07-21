@@ -9,6 +9,9 @@
 import Foundation
 import SpriteKit
 import AVFoundation
+import CoreGraphics
+
+var topZPosition: CGFloat = 100000
 
 enum Tone {
     case High
@@ -52,6 +55,9 @@ class ElNote: SKSpriteNode, Printable {
     var yoloUpAction: SKAction!
     var yoloDownAction: SKAction!
     
+    var colorTexture: SKTexture!
+    var nbTexture: SKTexture!
+    
     override var description: String {
         get {
             return "Note: appearTime = \(appearTime)"
@@ -71,7 +77,8 @@ class ElNote: SKSpriteNode, Printable {
         self.tone = tone
         self.soundType = soundType
         
-        self.zPosition = 100
+        self.zPosition = topZPosition
+        topZPosition--
         
         switch track {
         case .FarLeft:
@@ -90,13 +97,13 @@ class ElNote: SKSpriteNode, Printable {
         
         switch track {
         case .FarLeft:
-            soundName = "low_beat"
+            soundName = "boum_corps"
         case .CenterLeft:
-            soundName = "high_beat"
+            soundName = "boum_bouche"
         case .CenterRight:
-            soundName = "low_beat"
+            soundName = "clap_main"
         case .FarRight:
-            soundName = "high_beat"
+            soundName = "tchiki_bouche"
         default:
             fatalError("Wrong track called in sound init ElNote")
         }
@@ -139,6 +146,9 @@ class ElNote: SKSpriteNode, Printable {
         }
         
         self.init(texture: SKTexture(imageNamed: texture), color: color, size: UIConfig.noteStartSize, appearTime: appearTime, noteDuration: noteDuration, track: track, tone: tone, soundType: soundType)
+        
+        colorTexture = SKTexture(imageNamed: texture)
+        nbTexture = SKTexture(imageNamed: texture + "nb")
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -210,12 +220,26 @@ class ElNote: SKSpriteNode, Printable {
     }
     
     func fadeAlpha() {
-        self.runAction(alphaAction)
+        self.runAction(alphaAction, withKey: "alphaAction")
+    }
+    
+    func startReappearance() {
+        self.alpha = 0.5
     }
     
     func fireEmitter() {
+        
         self.runAction(yoloUpAction) {
-            self.runAction(self.yoloDownAction)
+            self.decolorize()
+            self.runAction(self.yoloDownAction, withKey: "yoloDownAction")
         }
+    }
+    
+    func colorize() {
+        self.texture = colorTexture
+    }
+    
+    func decolorize() {
+        self.texture = nbTexture
     }
 }

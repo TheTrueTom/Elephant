@@ -42,6 +42,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var editModeEnabled: Bool = false
     var transparenceEnabled: Bool = false
     
+    @IBAction func switchBackground(sender: AnyObject) {
+        mainScene.switchBackground()
+    }
+    
     @IBAction func openButtonClicked(sender: AnyObject) {
         var openPanel: NSOpenPanel = NSOpenPanel()
         openPanel.prompt = "Ouvrir"
@@ -62,15 +66,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
             mainScene.preloadedNotes.removeAll(keepCapacity: false)
             
+            var fileList: [NSURL] = []
+            
             while let file = enumerator?.nextObject() as? NSURL {
                 if i < 11 && file.pathExtension == "mid" {
-                    mainScene.preloadedNotes.append(MidiFile.readMidiFile(file))
+                    fileList.append(file)
                     i++
                 }
             }
+            
+            for url in fileList {
+                mainScene.preloadedNotes.append(MidiFile.readMidiFile(url))
+            }
+            
             if !mainScene.preloadedNotes.isEmpty {
                 mainScene.loadNotes(0)
             }
+            
+            println("\(mainScene.preloadedNotes.count) pistes chargées")
         }
     }
     
@@ -92,11 +105,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             self.skView!.showsNodeCount = true
             #endif
         }
-        /*
-        if let scene = EditScene.unarchiveFromFile("GameScene", type: "Edit") as? EditScene {
-            editScene = scene
-            editScene.scaleMode = .AspectFill
-        }*/
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {

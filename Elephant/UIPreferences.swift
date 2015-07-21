@@ -13,10 +13,10 @@ struct UIPreferences {
     // MARK: - Notes
     
     /// Largeur des notes
-    var noteWidth: CGFloat = 50
+    var noteWidth: CGFloat = 60
     
     /// Longueur des notes
-    var noteHeight: CGFloat = 50
+    var noteHeight: CGFloat = 60
     
     /// Temps que mets une note pour aller du haut à la ligne de base
     var noteDuration: NSTimeInterval = 30
@@ -50,8 +50,8 @@ struct UIPreferences {
     
     /// Taille des notes en haut de l'écran
     var noteStartSize: CGSize {
-        let height = noteEndSize.height * 0.75
-        let width = noteEndSize.width * 0.75
+        let height = noteEndSize.height * 0.95
+        let width = noteEndSize.width * 0.95
         return CGSizeMake(width, height)
     }
     

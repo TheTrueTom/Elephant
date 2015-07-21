@@ -71,12 +71,22 @@
                                     <action selector="openButtonClicked:" target="494" id="ij0-ci-PlZ"/>
                                 </connections>
                             </menuItem>
+                            <menuItem title="Switch Background" keyEquivalent="b" id="zdB-I0-2cJ">
+                                <connections>
+                                    <action selector="switchBackground:" target="-1" id="YaC-6Z-qT5"/>
+                                </connections>
+                            </menuItem>
                         </items>
                     </menu>
                 </menuItem>
                 <menuItem title="Window" id="19">
                     <menu key="submenu" title="Window" systemMenu="window" id="24">
                         <items>
+                            <menuItem title="Fullscreen" keyEquivalent="f" id="4k8-1u-h0n">
+                                <connections>
+                                    <action selector="toggleFullScreen:" target="-1" id="f1m-Jm-2pj"/>
+                                </connections>
+                            </menuItem>
                             <menuItem title="Minimize" keyEquivalent="m" id="537">
                                 <connections>
                                     <action selector="performMiniaturize:" target="-1" id="538"/>
@@ -113,7 +123,7 @@
             </items>
         </menu>
         <window title="Elephant" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hasShadow="NO" releasedWhenClosed="NO" animationBehavior="default" id="371" customClass="ElWindow" customModule="Elephant" customModuleProvider="target">
-            <windowStyleMask key="styleMask" closable="YES" miniaturizable="YES"/>
+            <windowStyleMask key="styleMask" closable="YES" miniaturizable="YES" resizable="YES"/>
             <windowCollectionBehavior key="collectionBehavior" fullScreenPrimary="YES"/>
             <rect key="contentRect" x="0.0" y="0.0" width="1024" height="597"/>
             <rect key="screenRect" x="0.0" y="0.0" width="1280" height="777"/>

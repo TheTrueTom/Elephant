@@ -37,8 +37,8 @@ class MidiFile {
         
         var infos = MusicSequenceGetInfoDictionary(s) as Dictionary
         
-        var tempo = infos["tempo"] as! Int
-        
+        var tempo = infos["tempo"] as! Float64
+        //tempo = 105
         println(infos)
         
         MusicSequenceGetIndTrack(s, 0, &track)
@@ -70,25 +70,25 @@ class MidiFile {
                 let note = eventData.memory.note
                 let velocity = eventData.memory.velocity
                 let duration = eventData.memory.duration
-                //println("\(outSeconds) - \(timeStamp) - \(note) - \(velocity) - \(duration)")
+                println("\(outSeconds) - \(timeStamp) - \(note) - \(velocity) - \(duration)")
                 
                 let track: TrackPosition!
                 
-                if note == 36 {
+                if note == 65 {
                     track = .FarLeft
-                } else if note == 40 {
+                } else if note == 43 {
                     track = .CenterLeft
-                } else if note == 44 {
+                } else if note == 64 {
                     track = .CenterRight
                 } else {
                     track = .FarRight
                 }
                 
-                var appearTime = Int(outSeconds * 600)
+                var appearTime = Int(outSeconds * 72000/tempo)
                 
                 if appearTime == 0 { appearTime = 1 }
                 
-                let noteDuration = Int(duration * 600)
+                let noteDuration = Int(duration * Float(72000/tempo))
                 
                 var newNote = ElNote(track: track, appearTime: Double(appearTime), noteDuration: Double(noteDuration))
                 
