@@ -17,13 +17,17 @@ class GameScene: SKScene {
     let loadKeyCodes: [UInt16] = [50, 6, 7, 8, 9, 11, 45, 46, 43, 47, 44]
     
     var preloadedNotes: [[Int: [String: [ElNote]]]] = []
+    var preloadedFlippedNotes: [[Int: [String: [ElNote]]]] = []
+    
+    var fileNames: [String] = []
+    
+    var midiOn: Bool = true
     
     // Nodes
     var world: SKNode!
     var notes: Dictionary<Int, Dictionary<String, Array<ElNote>>> = [:] {
         willSet {
             self.speed = 1
-            speedLabel.text = "Speed: " + String(format: "%.1f", scene!.speed)
             self.paused = true
         }
     }
@@ -41,10 +45,6 @@ class GameScene: SKScene {
         }
     }
     
-    // Debug labels
-    var speedLabel: SKLabelNode!
-    var timerLabel: SKLabelNode!
-    
     /** Initial location for window dragging set on mouseDown*/
     var initialLocation: NSPoint!
     
@@ -53,6 +53,13 @@ class GameScene: SKScene {
     var usedBackgroundName: String = "background"
     
     var background: SKSpriteNode!
+    
+    var flipped = false {
+        didSet {
+            loadNotes()
+        }
+    }
+    var loadedNotes = 0
     
     // MARK: - LIFE CYCLE
     
@@ -83,8 +90,6 @@ class GameScene: SKScene {
         
         setupBackground()
         setupTracks()
-        
-        setupDebug()
         
         gameTimer = NSTimer.scheduledTimerWithTimeInterval(1/UIConfig.expectedFPS, target: self, selector: "firedGameTimer", userInfo: nil, repeats: true)
         
@@ -184,16 +189,32 @@ class GameScene: SKScene {
                 println("Reserved")*/
             case 0xFA:
                 println("Start")
-                scene?.paused = false
+                if midiOn {
+                    scene?.paused = false
+                    let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.pausedLabel.stringValue = "\(self.paused)"
+                }
             case 0xFB:
                 println("Continue")
-                scene?.paused = false
+                if midiOn {
+                    scene?.paused = false
+                    let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.pausedLabel.stringValue = "\(self.paused)"
+                }
             case 0xFC:
                 println("Stop")
-                scene?.paused = true
+                if midiOn {
+                    scene?.paused = true
+                    let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.pausedLabel.stringValue = "\(self.paused)"
+                }
             case 0xFD:
                 println("Start")
-                scene?.paused = false
+                if midiOn {
+                    scene?.paused = false
+                    let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+                    appDelegate.pausedLabel.stringValue = "\(self.paused)"
+                }
             default: break
                 
             }
@@ -289,7 +310,6 @@ class GameScene: SKScene {
     // MARK: - FRAME UPDATE
     
     override func update(currentTime: CFTimeInterval) {
-        timerLabel.text = "\(gameTime) / \(Int(endTime))"
     }
     
     // MARK: - USER INPUT
@@ -300,6 +320,8 @@ class GameScene: SKScene {
         var windowFrame = self.view!.window!.frame
         
         initialLocation = NSEvent.mouseLocation()
+        
+        println(theEvent.locationInNode(world))
         
         initialLocation.x -= windowFrame.origin.x
         initialLocation.y -= windowFrame.origin.y
@@ -323,6 +345,9 @@ class GameScene: SKScene {
     
     override func keyDown(theEvent: NSEvent) {
         var keyCode = theEvent.keyCode
+        
+        println(keyCode)
+        
         switch keyCode {
         case 125: // Down
             scene?.speed -= 0.1
@@ -335,15 +360,25 @@ class GameScene: SKScene {
         case 50, 6, 7, 8, 9, 11, 45, 46, 43, 47, 44:
             for (index, value) in enumerate(loadKeyCodes) {
                 if value == keyCode {
-                    loadNotes(index)
+                    loadedNotes = index
+                    loadNotes()
                     break
                 }
             }
+        case 3:
+            flipped = !flipped
+            switchBackground()
+            let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.flippedLabel.stringValue = "\(flipped)"
+        case 41:
+            midiOn = !midiOn
+            let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.midiOnLabel.stringValue = "\(midiOn)"
         default:
             break
         }
         
-        speedLabel.text = "Speed: " + String(format: "%.1f", scene!.speed)
+        updateMonitor()
     }
     
     // MARK: - SIMULATION HANDLING
@@ -358,6 +393,9 @@ class GameScene: SKScene {
     
     func togglePlayPause() {
         self.paused = !self.paused
+        
+        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.pausedLabel.stringValue = "\(self.paused)"
     }
     
     func reset() {
@@ -374,26 +412,12 @@ class GameScene: SKScene {
                 songItem.removeFromParent()
             }
         }
+        
+        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.pausedLabel.stringValue = "\(self.paused)"
     }
     
     // MARK: - SIMULATION SETUP
-    
-    func setupDebug() {
-        timerLabel = SKLabelNode(text: "\(gameTime)")
-        timerLabel.horizontalAlignmentMode = .Left
-        timerLabel.position = CGPointMake(0, 0)
-        timerLabel.text = "0"
-        timerLabel.zPosition = 1000
-        scene?.addChild(timerLabel)
-        
-        speedLabel = SKLabelNode(text: "Speed: \(scene!.speed)")
-        speedLabel.horizontalAlignmentMode = .Left
-        speedLabel.verticalAlignmentMode = .Bottom
-        speedLabel.position = CGPointMake(0, scene!.frame.height - speedLabel.frame.size.height)
-        speedLabel.text = "Speed: " + String(format: "%.1f", scene!.speed)
-        speedLabel.zPosition = 1000
-        scene?.addChild(speedLabel)
-    }
     
     func setupBackground() {
         background = SKSpriteNode(imageNamed: "background")
@@ -430,16 +454,26 @@ class GameScene: SKScene {
         }
     }
     
-    func loadNotes(index: Int) {
-        if index < preloadedNotes.count {
+    func loadNotes() {
+        if loadedNotes < preloadedNotes.count {
             reset()
             
-            println("Loading notes at index \(index)")
+            println("Loading notes at index \(loadedNotes)")
             
-            notes = preloadedNotes[index]
+            notes = (flipped == false) ? preloadedNotes[loadedNotes] : preloadedFlippedNotes[loadedNotes]
         
             endTime = Utils.getMaxKey(notes) + 2 * UIConfig.noteDuration * Double(UIConfig.expectedFPS)
             prepareNotes()
+            
+            let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+            appDelegate.trackIndexLabel.stringValue = "\(loadedNotes)"
+            appDelegate.loadedFileNameLabel.stringValue = "\(fileNames[loadedNotes])"
         }
+    }
+    
+    func updateMonitor() {
+        let appDelegate = NSApplication.sharedApplication().delegate as! AppDelegate
+        appDelegate.speedLabel.stringValue = String(format: "%.1f", scene!.speed)
+        appDelegate.positionLabel.stringValue = "\(gameTime) / \(Int(endTime))"
     }
 }

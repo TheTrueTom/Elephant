@@ -12,13 +12,14 @@ import Cocoa
 
 class MidiFile {
     
-    class func readMidiFile(url: NSURL) -> [Int: [String: [ElNote]]] {
+    class func readMidiFile(url: NSURL) -> ([Int: [String: [ElNote]]], [Int: [String: [ElNote]]]) {
         var musicSequence:MusicSequence = nil
         
         var s: MusicSequence = MusicSequence()
         NewMusicSequence(&s)
         
         var result: [Int: [String: [ElNote]]] = [:]
+        var flippedResult: [Int: [String: [ElNote]]] = [:]
         
         var midiFileURL = url
         let soundCFURL = midiFileURL as CFURL
@@ -70,18 +71,23 @@ class MidiFile {
                 let note = eventData.memory.note
                 let velocity = eventData.memory.velocity
                 let duration = eventData.memory.duration
-                println("\(outSeconds) - \(timeStamp) - \(note) - \(velocity) - \(duration)")
+                //println("\(outSeconds) - \(timeStamp) - \(note) - \(velocity) - \(duration)")
                 
                 let track: TrackPosition!
+                let flippedTrack: TrackPosition!
                 
                 if note == 65 {
                     track = .FarLeft
+                    flippedTrack = .CenterRight
                 } else if note == 43 {
                     track = .CenterLeft
+                    flippedTrack = .FarRight
                 } else if note == 64 {
                     track = .CenterRight
+                    flippedTrack = .FarLeft
                 } else {
                     track = .FarRight
+                    flippedTrack = .CenterLeft
                 }
                 
                 var appearTime = Int(outSeconds * 72000/tempo)
@@ -91,15 +97,19 @@ class MidiFile {
                 let noteDuration = Int(duration * Float(72000/tempo))
                 
                 var newNote = ElNote(track: track, appearTime: Double(appearTime), noteDuration: Double(noteDuration))
+                var newFlippedNote = ElNote(track: flippedTrack, appearTime: Double(appearTime), noteDuration: Double(noteDuration), flipped: true)
                 
                 if result[appearTime] != nil {
                     if result[appearTime]!["appear"] != nil {
                         result[appearTime]!["appear"]!.append(newNote)
+                        flippedResult[appearTime]!["appear"]!.append(newFlippedNote)
                     } else {
                         result[appearTime]!.updateValue([newNote], forKey: "appear")
+                        flippedResult[appearTime]!.updateValue([newFlippedNote], forKey: "appear")
                     }
                 } else {
                     result.updateValue(["appear": [newNote]], forKey: appearTime)
+                    flippedResult.updateValue(["appear": [newFlippedNote]], forKey: appearTime)
                 }
                 
                 let playTime = Int(appearTime) + Int(UIConfig.expectedFPS * UIConfig.noteDuration)
@@ -107,11 +117,14 @@ class MidiFile {
                 if result[playTime] != nil {
                     if result[playTime]!["play"] != nil {
                         result[playTime]!["play"]!.append(newNote)
+                        flippedResult[playTime]!["play"]!.append(newFlippedNote)
                     } else {
                         result[playTime]!.updateValue([newNote], forKey: "play")
+                        flippedResult[playTime]!.updateValue([newFlippedNote], forKey: "play")
                     }
                 } else {
                     result.updateValue(["play": [newNote]], forKey: playTime)
+                    flippedResult.updateValue(["play": [newFlippedNote]], forKey: playTime)
                 }
                 
                 let stopTime = playTime + Int(noteDuration)
@@ -119,11 +132,14 @@ class MidiFile {
                 if result[stopTime] != nil {
                     if result[stopTime]!["stop"] != nil {
                         result[stopTime]!["stop"]!.append(newNote)
+                        flippedResult[stopTime]!["stop"]!.append(newFlippedNote)
                     } else {
                         result[stopTime]!.updateValue([newNote], forKey: "stop")
+                        flippedResult[stopTime]!.updateValue([newFlippedNote], forKey: "stop")
                     }
                 } else {
                     result.updateValue(["stop": [newNote]], forKey: stopTime)
+                    flippedResult.updateValue(["stop": [newFlippedNote]], forKey: stopTime)
                 }
                 
             case UInt32(kMusicEventType_Meta):
@@ -144,6 +160,6 @@ class MidiFile {
             MusicEventIteratorNextEvent(iterator)
         }
         
-        return result
+        return (result, flippedResult)
     }
 }

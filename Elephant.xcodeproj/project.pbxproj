@@ -253,6 +253,7 @@
 		E20B44691B25FD2100163430 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Thomas Brichart";
 				TargetAttributes = {

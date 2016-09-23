@@ -13,16 +13,6 @@ import CoreGraphics
 
 var topZPosition: CGFloat = 100000
 
-enum Tone {
-    case High
-    case Low
-}
-
-enum SoundType {
-    case Beat
-    case Vocal
-}
-
 class ElNote: SKSpriteNode, Printable {
     
     /** Corde sur laquelle est placée la note */
@@ -36,12 +26,6 @@ class ElNote: SKSpriteNode, Printable {
     
     /** Temps que dure la note */
     var noteDuration: NSTimeInterval = 0
-    
-    /** Type de note */
-    var soundType: SoundType!
-    
-    /** Tonalité de la note */
-    var tone: Tone!
     
     var soundAction: SKAction!
     
@@ -64,7 +48,7 @@ class ElNote: SKSpriteNode, Printable {
         }
     }
     
-    init(texture: SKTexture!, color: NSColor!, size: CGSize, appearTime: NSTimeInterval, noteDuration: NSTimeInterval, track: TrackPosition, tone: Tone, soundType: SoundType) {
+    init(texture: SKTexture!, color: NSColor!, size: CGSize, appearTime: NSTimeInterval, noteDuration: NSTimeInterval, track: TrackPosition, flipped: Bool) {
         super.init(texture: texture, color: color, size: size)
         
         self.colorBlendFactor = UIConfig.songItemColorBlendingFactor
@@ -73,9 +57,6 @@ class ElNote: SKSpriteNode, Printable {
         self.trackPosition = track
         self.appearTime = appearTime
         self.noteDuration = noteDuration
-        
-        self.tone = tone
-        self.soundType = soundType
         
         self.zPosition = topZPosition
         topZPosition--
@@ -97,13 +78,13 @@ class ElNote: SKSpriteNode, Printable {
         
         switch track {
         case .FarLeft:
-            soundName = "boum_corps"
+            soundName = (flipped) ? "clap_main" : "boum_corps"
         case .CenterLeft:
-            soundName = "boum_bouche"
+            soundName = (flipped) ? "tchiki_bouche" : "boum_bouche"
         case .CenterRight:
-            soundName = "clap_main"
+            soundName = (flipped) ? "boum_corps" : "clap_main"
         case .FarRight:
-            soundName = "tchiki_bouche"
+            soundName = (flipped) ? "boum_bouche" : "tchiki_bouche"
         default:
             fatalError("Wrong track called in sound init ElNote")
         }
@@ -113,39 +94,29 @@ class ElNote: SKSpriteNode, Printable {
         alphaAction = SKAction.fadeAlphaTo(0, duration: 1)
     }
     
-    convenience init(track: TrackPosition, appearTime: NSTimeInterval, noteDuration: NSTimeInterval) {
+    convenience init(track: TrackPosition, appearTime: NSTimeInterval, noteDuration: NSTimeInterval, flipped: Bool = false) {
         
         var color = NSColor.whiteColor()
-        var tone: Tone = .Low
-        var soundType: SoundType = .Vocal
         var texture: String = ""
         
         switch track {
         case .FarLeft:
             color = NSColor.redColor()
-            tone = .Low
-            soundType = .Vocal
             texture = "note1"
         case .CenterLeft:
             color = NSColor.greenColor()
-            tone = .High
-            soundType = .Vocal
             texture = "note3"
         case .CenterRight:
             color = NSColor.blueColor()
-            tone = .Low
-            soundType = .Beat
             texture = "note2"
         case .FarRight:
             color = NSColor.orangeColor()
-            tone = .High
-            soundType = .Beat
             texture = "note4"
         default:
             fatalError("Wrong track called in convenience init ElNote")
         }
         
-        self.init(texture: SKTexture(imageNamed: texture), color: color, size: UIConfig.noteStartSize, appearTime: appearTime, noteDuration: noteDuration, track: track, tone: tone, soundType: soundType)
+        self.init(texture: SKTexture(imageNamed: texture), color: color, size: UIConfig.noteStartSize, appearTime: appearTime, noteDuration: noteDuration, track: track, flipped: flipped)
         
         colorTexture = SKTexture(imageNamed: texture)
         nbTexture = SKTexture(imageNamed: texture + "nb")

@@ -37,6 +37,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var window: ElWindow!
     @IBOutlet weak var skView: ElView!
     
+    @IBOutlet weak var speedLabel: NSTextField!
+    @IBOutlet weak var trackIndexLabel: NSTextField!
+    @IBOutlet weak var nbLoadedFilesLabel: NSTextField!
+    @IBOutlet weak var loadedFileNameLabel: NSTextField!
+    @IBOutlet weak var positionLabel: NSTextField!
+    @IBOutlet weak var flippedLabel: NSTextField!
+    @IBOutlet weak var pausedLabel: NSTextField!
+    @IBOutlet weak var midiOnLabel: NSTextField!
+    
     var mainScene: GameScene!
     
     var editModeEnabled: Bool = false
@@ -76,12 +85,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             }
             
             for url in fileList {
-                mainScene.preloadedNotes.append(MidiFile.readMidiFile(url))
+                var tuple = MidiFile.readMidiFile(url)
+                mainScene.preloadedNotes.append(tuple.0)
+                mainScene.preloadedFlippedNotes.append(tuple.1)
+                mainScene.fileNames.append("\(url.lastPathComponent!)")
             }
             
             if !mainScene.preloadedNotes.isEmpty {
-                mainScene.loadNotes(0)
+                mainScene.loadNotes()
             }
+            
+            nbLoadedFilesLabel.stringValue = "\(mainScene.preloadedNotes.count)"
             
             println("\(mainScene.preloadedNotes.count) pistes chargées")
         }
@@ -100,10 +114,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             self.skView!.ignoresSiblingOrder = true
             
-            #if DEBUG
             self.skView!.showsFPS = true
-            self.skView!.showsNodeCount = true
-            #endif
+            self.skView!.showsNodeCount = false
         }
     }
     
